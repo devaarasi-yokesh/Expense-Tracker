@@ -3,17 +3,21 @@ import { useState } from 'react'
 export default function ViewTracker(props){
    const [val, setVal] = useState(" ");
    const [title, setTitle] = useState("");
-   function handleClick(){
-    // props.onClick(true, false);
-    console.log(props.show)
-    setVal(props.show[0])
-    setTitle(props.show[1])
-   }
+   
+   const styling = {display:"flex",justifyItems:"center",flexDirection:"row",justifyContent:"space-evenly"}
+   
     return(
         <>
-        <h2>{title}</h2>
-        <p>{val}</p>
-        <button onClick={handleClick}>Add</button>
+        <div>
+        <div className='monthlyHeading' style={styling}>
+        <h1>{props.listShow[`${props.shareMonth}`].month}</h1>
+        <h1>{props.listShow[`${props.shareMonth}`].year}</h1>
+        </div>
+        <div className='monthlyContent' style={styling}>
+        <p>{props.listShow[`${props.shareMonth}`].title}</p>
+        <p>{props.listShow[`${props.shareMonth}`].amt}</p>
+        </div>
+        </div>
         </>
     )
 }
