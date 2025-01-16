@@ -12,7 +12,7 @@ function Input(props){
     justifyContent: "space-between",
   }  
 
-  const [amt, setAmt] = useState(0);  // amount input initialized
+ 
   
   const amtref = useRef();   // Reference for getting the recent value entered by the user for amount field
   const titleref = useRef();  // title field ref
@@ -29,46 +29,44 @@ function Input(props){
   
 
   
-   
-  let temp = {};                // Object to store the input values
-  const values = {};
   
   
+  
+
   // Event handler for add button
   function handleClick(){
-    // setAmt(amtref.current.value);
-    // setTitle(titleref.current.value);
-    const typeEl = document.getElementById("typeOfIncome");  // getting type field from DOM
-    const dateEl = document.getElementById("dateVal");      // getting date field from DOM
-    let date = new Date(dateEl.value);                      // Creating date object for the date field
-   
 
-    
-    const keys = `${months[date.getMonth()]}${date.getFullYear()}`;  // Creating a custom key to store the input under particular month and year
-    
-    const exactDate = date.getDate();                                   // Get a specific date      
+    // Storing data to the Main object - items
+    const typeEl = document.getElementById("typeOfIncome");             // getting type field from DOM
+    const dateEl = document.getElementById("dateVal");                 // getting date field from DOM
+    let date = new Date(dateEl.value);                                 // Creating date object for the date field
+    const exactDate = date.getDate();                                  // Get a specific date      
     props.changeDate(exactDate);                                       // transferring date to listItems 
-
-    console.log(keys,exactDate,dateEl.value)
-    props.changeTitle(keys);                                            // Title of the specific box like January 2025
-    
-   
-   
-    temp[keys] = values;
-    values[exactDate] = {};
-    values[exactDate].title = titleref.current.value;
-    values[exactDate].amt = amtref.current.value;
-    values[exactDate].type = typeEl.value;
-    values[exactDate].mode = transref.current.value;
-    
+    console.log(exactDate,dateEl.value);                               // Testing point for checking date 
+                                             
+    let temp2 = {};      
+    temp2.month_year = String(months[date.getMonth()]) + String(date.getFullYear());
+    // temp2.year = date.getFullYear();
+    // temp2.date = date.getDate();
+    temp2.title = titleref.current.value;
+    temp2.amt = amtref.current.value;
+    temp2.mode = transref.current.value;
+    temp2.section = true;
   
+    console.log(temp2,"it is temp2")
    
-
+    props.listData([...props.listObject,temp2])
+    console.log(props.listObject)                    // Testing point of Main object items
   
-    props.listData(Object.assign({}, props.listObject, temp));            // Total list of keys
-    console.log(temp)
-    
 
+
+    // Filtering data from main object - Creating object of specific month and dates
+    let temp = [...new Set((props.listObject.map((data) => String(data.month_year) )))];  // Filtering data and month for the header
+    props.changeFilteredMonthItems([...props.shareFilteredMonthItems,temp]);
+    console.log(temp, "this is the temp",props.shareFilteredMonthItems)    // Testing point
+  
+
+    // to hide the mode option
     if(typeEl.value === "saving"){
       props.saving(Number(props.prevSav) + Number(amtref.current.value));
     }
@@ -85,7 +83,10 @@ function Input(props){
     amtref.current.value = "";
   }
 
+
+  // Checking the type - Flag point to the mode and title to show or don't show
   function changeFields(e){
+
     if(e.target.value !== "expense"){
       setShowTitle(false);
       setShowMode(false);
@@ -94,7 +95,10 @@ function Input(props){
       setShowTitle(true);
       setShowMode(true);
     }
+
   }
+
+
     return( 
     <>
     <div className='container'  style={myStyle}>
