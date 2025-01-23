@@ -11,35 +11,26 @@ function handleChange(){
 
     return(
         <>
-        
-               
-                    <div className='monthlyContent' style={styling}>
-                    
-                        {props.listShow.map((data2) => {
-                           console.log( data2.month_year,typeof(data2.month_year))
-                           if(data2.section){
-                               return(
-                                <table>
-                                <thead>
-                                    <tr><td>{data2.month_year}</td></tr>
-                                </thead>
-                                 <tbody>
-                                   <tr>
-                                       <td onChange={handleChange}>{data2.title}</td>
-                                       <td>{data2.amt}</td>
-                                       <td>{data2.mode}</td>
-                                   </tr>
-                                   <tr>
-                            <td></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                               )
-                            }
-                           
-                        })}
-                        
-                    </div>
+         <div className='monthlyContent' style={styling}>
+         <table>
+            <thead>
+            <tr><td>January2025</td></tr>
+            </thead>
+         {props.listShow.map((datas) => {
+            if(datas.month_year === "January2025"){
+                return(
+                    <tbody>
+                         <tr>
+                            <td>{datas.title}</td>
+                            <td>{datas.amt}</td>
+                            <td>{datas.mode}</td>
+                          </tr>
+                    </tbody>    
+                ) 
+            }
+        })}  
+        </table>    
+         </div>
         </>
 )
 }
