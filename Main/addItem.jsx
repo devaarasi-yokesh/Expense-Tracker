@@ -32,7 +32,9 @@ function Input(props){
   
   
   
-
+  const temp = {};
+  
+  let temp2 = {}; 
   // Event handler for add button
   function handleClick(){
 
@@ -41,29 +43,81 @@ function Input(props){
     const dateEl = document.getElementById("dateVal");                 // getting date field from DOM
     let date = new Date(dateEl.value);                                 // Creating date object for the date field
     const exactDate = date.getDate();                                  // Get a specific date      
+    const month_year = String(months[date.getMonth()]) + String(date.getFullYear());
     props.changeDate(exactDate);                                       // transferring date to listItems 
-    console.log(exactDate,dateEl.value);                               // Testing point for checking date 
-                                             
-    let temp2 = {};      
-    temp2.month_year = String(months[date.getMonth()]) + String(date.getFullYear());
-    // temp2.year = date.getFullYear();
-    // temp2.date = date.getDate();
-    temp2.title = titleref.current.value;
-    temp2.amt = amtref.current.value;
-    temp2.mode = transref.current.value;
-    temp2.section = true;
-  
-    console.log(temp2,"it is temp2")
+    console.log(exactDate,dateEl.value); 
+    
+    
+         
+    let key ;
+    if(typeEl && dateEl && transref.current.value && titleref.current.value && transref.current.value){
+      temp2.month_year = String(months[date.getMonth()]) + String(date.getFullYear());
+      // temp2.year = date.getFullYear();
+      temp2.date = date.getDate();
+      temp2.title = titleref.current.value;
+      temp2.amt = amtref.current.value;
+      temp2.mode = transref.current.value;
+      temp2.section = true;
+      function creatingKey(){
+        const keys = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+        const result = `${keys[Math.floor(Math.random() * 25)]}_${temp2.date}`;
+        return result;
+      }
+    
+      key = creatingKey();
+    
+      
+      
+    console.log(temp2,"it is temp2","key",key,temp)
    
     props.listData([...props.listObject,temp2])
     console.log(props.listObject)                    // Testing point of Main object items
+    }
+   else{
+    alert("Please fill in the required fields")
+   }
   
+   let final = {};
+   let section = "section";
+   if(final.hasOwnProperty(temp2.month_year)){
+    if(final[month_year].hasOwnProperty(exactDate)){
+      final[month_year][exactDate] = {...final[month_year][exactDate],section:true}
+      return final
+    }
+   }
+   else{
+    final[temp2.month_year] = {};
+    final[temp2.month_year][exactDate] = {}
+    final[temp2.month_year][exactDate][section] = true;
+   }
+
+   console.log(final,"newOne");
+   props.setFilteredMonthItems([...props.filteredMonthItems,final]);
 
 
     // Filtering data from main object - Creating object of specific month and dates
-    let temp = [...new Set((props.listObject.map((data) => String(data.month_year) )))];  // Filtering data and month for the header
-    props.changeFilteredMonthItems([...props.shareFilteredMonthItems,temp]);
-    console.log(temp, "this is the temp",props.shareFilteredMonthItems)    // Testing point
+      // Filtering data and month for the header
+    
+   
+      if(temp.hasOwnProperty(month_year)){
+        console.log("First step- If");
+             if(!temp[month_year].hasOwnProperty(key)){
+              const updatedValue = {};
+              updatedValue[key] = {title:titleref.current.value,amt:amtref.current.value,mode:transref.current.value}
+              temp = {...temp[month_year][key],...updatedValue}
+         }
+       
+      }
+      else if(!temp.hasOwnProperty(month_year)){
+        console.log("Second - Else of outside If")
+        temp[month_year] = {};
+        temp[month_year][key] = {title:titleref.current.value,amt:amtref.current.value,mode:transref.current.value};    
+      }
+      
+    
+    
+    
+    console.log( "this is the temp",temp,props.filteredMonthItems)    // Testing point
   
 
     // to hide the mode option
@@ -77,6 +131,10 @@ function Input(props){
       props.expense(Number(props.prevExp) + Number(amtref.current.value));
     }
     typeEl.value = "expense";
+    dateEl.value = "";
+    titleref.current.value = "";
+    amtref.current.value = "";
+    transref.current.value = "";
     setShowTitle(true);
     setShowMode(true);
     props.share([titleref.current.value,amtref.current.value]); // setting the user input values title(Groceries / Food ) and amount
